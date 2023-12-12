@@ -1,0 +1,48 @@
+import cv2
+import numpy as np
+from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+
+def downscale_image_custom(input_image, scaling_factor):
+    kernel_size_custom = int(1 / scaling_factor)
+    kernel_custom = np.ones((kernel_size_custom, kernel_size_custom), np.float32) / (kernel_size_custom**2)
+    downscaled_image_custom = cv2.filter2D(input_image, -1, kernel_custom)
+    downscaled_image_custom = downscaled_image_custom[::kernel_size_custom, ::kernel_size_custom]
+    return downscaled_image_custom
+
+def upscale_image_custom(input_image, scaling_factor):
+    new_size_custom = (int(input_image.shape[1] * scaling_factor), int(input_image.shape[0] * scaling_factor))
+    upscaled_image_custom = cv2.resize(input_image, new_size_custom, interpolation=cv2.INTER_NEAREST)
+    return upscaled_image_custom
+
+image_path_custom = 'fotograf.png'
+original_image_custom = cv2.imread(image_path_custom, cv2.IMREAD_GRAYSCALE)
+scaling_factor_custom = 1
+
+downscaled_image_custom = downscale_image_custom(original_image_custom, scaling_factor_custom)
+upscaled_image_custom = upscale_image_custom(downscaled_image_custom, scaling_factor_custom**(-1))
+
+original_image_resized_custom = cv2.resize(original_image_custom, upscaled_image_custom.shape[::-1])
+mse_upscale_custom = mean_squared_error(original_image_resized_custom.flatten(), upscaled_image_custom.flatten())
+
+original_image_resized_custom = cv2.resize(original_image_custom, downscaled_image_custom.shape[::-1])
+mse_downscale_custom = mean_squared_error(original_image_resized_custom.flatten(), downscaled_image_custom.flatten())
+
+plt.figure(figsize=(15, 10))
+
+plt.subplot(1, 3, 1)
+plt.imshow(original_image_custom, cmap='gray')
+plt.title('Orginalny obraz')
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.imshow(downscaled_image_custom, cmap='gray')
+plt.title('Zmniejszony obraz')
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.imshow(upscaled_image_custom, cmap='gray')
+plt.title('Zwiększony obraz')
+plt.axis('off')
+
+plt.show()
