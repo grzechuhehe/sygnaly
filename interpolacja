@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+     
+
+# Zdefiniowanie funkcji, które będziemy interpolować
+def f1(x):
+    return np.sin(1/x)
+     
+
+# Zdefiniowanie przedziału i liczby punktów
+N = 100  # Domyślna liczba punktów w zadaniu
+x_original = np.linspace(-np.pi, np.pi, N)
+y_original = f1(x_original)
+
+# Generowanie nowych punktów, na których będziemy przeprowadzać interpolację
+N_new = 4 * N  # 4 razy więcej punktów niż w oryginalnym zbiorze
+x_new = np.linspace(-np.pi, np.pi, N_new)
+
+     
+
+# interpolacja liniowa
+linear_interpolator = interp1d(x_original, y_original, kind='linear')
+y_interpolated_linear = linear_interpolator(x_new)
+# interpolacje sześcienna
+cubic_interpolator = interp1d(x_original, y_original, kind='cubic')
+y_interpolated_cubic = cubic_interpolator(x_new)
+
+# Obliczanie MSE dla obu interpolacji
+mse_linear = np.mean((f1(x_new) - y_interpolated_linear) ** 2)
+mse_cubic = np.mean((f1(x_new) - y_interpolated_cubic) ** 2)
+
+# Wyświetlanie wyników
+plt.figure(figsize=(14, 7))
+
+plt.subplot(1, 2, 1)
+plt.plot(x_original, y_original, 'o', label='Oryginalne punkty')
+plt.plot(x_new, y_interpolated_linear, '-', label='Interpolacja liniowa')
+plt.title(f'Interpolacja liniowa MSE: {mse_linear:.5f}')
+plt.legend()
+
+plt.show()
