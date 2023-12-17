@@ -15,7 +15,7 @@ def upscale_image_custom(input_image, scaling_factor):
     upscaled_image_custom = cv2.resize(input_image, new_size_custom, interpolation=cv2.INTER_NEAREST)
     return upscaled_image_custom
 
-image_path_custom = 'fotograf.png'
+image_path_custom = 'pies.jpg'
 original_image_custom = cv2.imread(image_path_custom, cv2.IMREAD_GRAYSCALE)
 scaling_factor_custom = 1
 
